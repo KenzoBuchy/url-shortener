@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image Upload and List</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+    }
+    input[type="file"], input[type="text_up"], input[type="text_bottom"] {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+    }
+    button {
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    .image-list {
+      margin-top: 30px;
+    }
+    .image-item {
+      margin-bottom: 15px;
+    }
+    img {
+      max-width: 100%;
+      height: auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Choisissez une image et créez un meme</h1>
+
+    <!-- Upload Image Form -->
+    <div class="form-group">
+      <label for="file">Choisisser une image (JPG or PNG)</label>
+      <input type="file" id="file" accept="image/jpeg, image/png, image/jpg">
+    </div>
+    <div class="form-group">
+      <label for="text_up">Entrer du texte qui sera affiché en haut de l'image</label>
+      <input type="text_up" id="text_up" placeholder="Entrer du texte qui sera affiché en haut de l'image">
+      <label for="text_bottom">Entrer du texte qui sera affiché en bas de l'image</label>
+      <input type="text_bottom" id="text_bottom" placeholder="Entrer du texte qui sera affiché en bas de l'image">
+    </div>
+    <button id="uploadBtn">Téléchargez l'image</button>
+
+    <!-- List of Uploaded Images -->
+    <div class="image-list" id="imageList">
+        <button id="imageUpload">Voir les urls des images</button>
+      <h2>Memes téléchargés</h2>
+      <div id="imageUrlsContainer"></div>
+    </div>
+  </div>
+
+  <script>
+    const uploadBtn = document.getElementById('uploadBtn');
+    const fileInput = document.getElementById('file');
+    const textInputUp = document.getElementById('text_up');
+    const textInputBottom = document.getElementById('text_bottom');
+    const imageUrlsContainer = document.getElementById('imageUrlsContainer');
+
+    // Upload Image Function
+    uploadBtn.addEventListener('click', async () => {
+      const file = fileInput.files[0];
+      const text_up = textInputUp.value;
+      const text_bottom = textInputBottom.value;
+
+      if (!file) {
+        alert('Merci de renseigner une image');
+        return;
+      }
+
+      if (!text_up && !text_bottom) {
+        alert('Merci de renseigner au moins un des deux champs textes');
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('file', file);
+      if (text_up){
+        formData.append('text_up', text_up);
+        }
+    if (text_bottom){
+        formData.append('text_bottom', text_bottom);
+        }
+
+      try {
+        const response = await fetch('http://localhost:3000/dev/upload', {
+          method: 'POST',
+          body: formData
+        });
+
+        const result = await response.json();
+        if (response.ok) {
+          alert('Images téléchargées avec succès');
+          textInputUp.value = '';
+          textInputBottom.value = '';
+          fetchImageList();
+        } else {
+          alert(`Error: ${result.message}`);
+        }
+      } catch (error) {
+        alert('Error uploading image: ' + error.message);
+      }
+    });
+
+    // Fetch the List of Memes (Image URLs)
+    async function fetchImageList() {
+        console.log("coucou")
+      try {
+        const response = await fetch('http://localhost:3000/dev');
+        const data = await response.json();
+
+        imageUrlsContainer.innerHTML = ''; // Clear the current list
+
+        data.imageUrls.forEach(item => {
+          const imageItem = document.createElement('div');
+          imageItem.classList.add('image-item');
+
+          const img = document.createElement('img');
+          img.src = item.file_url;
+          img.alt = 'Uploaded Image';
+
+          const p = document.createElement('p');
+          p.textContent = `Uploaded at: ${item.createdAt}`;
+
+          imageItem.appendChild(img);
+          imageItem.appendChild(p);
+          imageUrlsContainer.appendChild(imageItem);
+        });
+      } catch (error) {
+        console.error('Error fetching image list:', error);
+      }
+    }
+
+    // Fetch the list of memes on page load
+    window.onload = fetchImageList();
+  </script>
+</body>
+</html>
