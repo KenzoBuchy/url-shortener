@@ -65,7 +65,7 @@ app.post('/upload', upload.single('file'), async (req, res) => {
       }])
       .toBuffer();
     // Générez une clé unique pour l'image
-    const file_key = `uploads/${uuidv4()}-${req.file.originalname}`;
+    const file_key = `uploads/${uuidv4()}`;
 
     // Uploader l'image sur MinIO (ou S3)
     await s3.putObject({

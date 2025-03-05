@@ -71,7 +71,6 @@
 
     <!-- List of Uploaded Images -->
     <div class="image-list" id="imageList">
-        <button id="imageUpload">Voir les urls des images</button>
       <h2>Memes téléchargés</h2>
       <div id="imageUrlsContainer"></div>
     </div>
@@ -116,6 +115,7 @@
         });
 
         const result = await response.json();
+
         if (response.ok) {
           alert('Images téléchargées avec succès');
           textInputUp.value = '';
@@ -131,9 +131,8 @@
 
     // Fetch the List of Memes (Image URLs)
     async function fetchImageList() {
-        console.log("coucou")
       try {
-        const response = await fetch('http://localhost:3000/dev');
+        const response = await fetch('http://localhost:3000/dev/listmemes');
         const data = await response.json();
 
         imageUrlsContainer.innerHTML = ''; // Clear the current list

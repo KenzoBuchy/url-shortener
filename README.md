@@ -3,8 +3,21 @@
 ## Prerequisites
 - Node.js installed
 - Serverless Framework installed (`npm install -g serverless`)
+- `npm i` pour être sur d'installer tous les packages js
 
 ## Starting the Project Locally
+
+First, don't forget to launch minio with the following command: 
+
+```bash
+docker-compose up -d
+```
+
+If you get a problem with a minio that even exist, delete the other with :
+
+```bash
+docker rm -f minio
+```
 
 To run the project locally using serverless-offline, use the following command:
 
@@ -19,11 +32,6 @@ This command:
 - Automatically restarts the service when changes are detected
 
 The API will be available at `http://localhost:3000` by default.
-
-## Development Notes
-- Any changes to your Lambda functions will trigger automatic reload
-- Check the console for endpoint URLs and port information
-- Use `Ctrl+C` to stop the local server
 
 
 ## Routes API
@@ -76,3 +84,5 @@ The API will be available at `http://localhost:3000` by default.
       ]
     }
     ```
+
+## Possibilité de lancer index.html depuis vsCode avec le plusgin LiveServer

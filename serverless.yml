@@ -1,8 +1,8 @@
 # "org" ensures this Service is used with the correct Serverless Framework Access Key.
 # "app" enables Serverless Framework Dashboard features and sharing them with other Services.
-app: url-shortener
+app: meme-generator
 # "service" is the name of this project. This will also be added to your AWS resource names.
-service: url-shortener
+service: meme-generator
 
 provider:
   name: aws
@@ -42,9 +42,10 @@ functions:
 
   listMemes:
     handler: handler.listMemes
+    timeout: 60
     events:
       - http:
-          path: ""
+          path: listmemes
           method: get
 
 
